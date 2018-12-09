@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Aug 17 00:03:09 2018
-
 @author: Jesus Omar Cuenca Espino
 """
 #recibe el ip en forma de string para que lo pueda dividir y procesar acordemente
@@ -30,19 +29,59 @@ def divide(ip):
     ipf[3]=num
     return ipf
 
-#recibe el ip y lo clasifica para poder determinar la mascara por default
+#recibe el ip generado por divide y lo clasifica para poder determinar la mascara por default
 def clase(ip):
-    tipo=int(ip[0][2:],2)
+    tipo=int(ip[0],2)
     if(tipo<0):
-        return "La ip ingresada esta mal escrita",-1
+        return -1
     elif(tipo<128):
-        return [255,0,0,0],1
+        return 1
     elif(tipo<192):
-        return [255,255,0,0],2
+        return 2
     elif(tipo<224):
-        return [255,255,255,0],3
+        return 3
     else:
-        return "error",-1
+        return -1
+
+#comprobante que la mascara de subnet no tenga contradicciones
+def comp(cl,smask):
+    for x in range(cl):
+        if(smask[x]!=255):
+            return True
+    return False
+
+#funcion para calcular la mascara de subred
+def final_mask(cl,use):
+    if(use>30 or use<9):
+        return "error"
+    msk=[0,0,0,0]
+    pos=0
+    while(use>8):
+        msk[pos]=255
+        pos+=1
+        use-=8
+    if(comp(cl,msk)):
+        return "error"
+    count=7
+    final=0
+    while(use>0):
+        final+=2**count
+        count-=1
+        use-=1
+    msk[pos]=final
+    return msk
+
+#junta los procesos de arriba en uno en automatico
+#y calcula los bits utiles para esas subredes
+def init(ipi,m):
+    ip=divide(ipi)
+    claseip=clase(ip)
+    usebits=m-claseip*8
+    if(usebits<1):
+        return ipi,m,"error"
+    else:
+        mask=final_mask(claseip,m)
+        return ip,claseip,mask,usebits
 
 #metodo que acomoda una lista que tenga forma de direccion ip y lo imprime unicamente
 def prip(ip):
@@ -55,7 +94,7 @@ def prip(ip):
         if(i<3):
             st+='.'
         i+=1
-    print(st)
+    #print(st)
     return st
 
 #acomoda una lista que contenga la mascara para que pueda ser leida
@@ -68,47 +107,57 @@ def pmask(mask):
             st+='.'
     return st
 
+#acomoda los bits que se encuentran en un string largo en una forma similar a la mascara final en forma de bit
+def transform_bits(string):
+    if(len(string)<32):
+        return "error"
+    else:
+        cont=0
+        res=""
+        while(cont<32):
+            if(cont in [8,16,24]):
+                res+='.'
+            res+=string[cont]
+            cont+=1
+        return res
+
+
+
 #basado en el numero de bits reservados y la mascara default
 #modifica la mascara para volverla la mascara de subred
-def subnet(mask,tip,subred):
-    rbits=subred-(8*(tip))
-    while(rbits>=8):
-        mask[tip]=255
-        tip+=1
-        rbits-=8
-    if(rbits!=0):
-        sub=0
-        for x in range(rbits):
-            sub+=2**(7-x)
-        mask[tip]=sub
-    return rbits
-
-def subred(ip,bits,subred):
-    return "none"
+def subnet(ip,cl,bits):
+    origin=""
+    for x in ip:
+        origin+=x
+    unmut=""
+    bits_no_usables=cl*8
+    for x in range(bits_no_usables):
+        unmut+=origin[x]
+    subnet_init=bits_no_usables+1
+    bits_subnet=""
+    for x in range(subnet_init,subnet_init+bits):
+        bits_subnet+=origin[x]
+    print(transform_bits(origin))
+    print(unmut)
+    print(bits_subnet)
+    print(origin)
 
 #el menu y lo que permite manejar la GUI
-def main(ip,bit):
-    ipv4=divide(ip)
-    if(type(ipv4)==str or bit>32):
-        return "Algun dato introducido es erroneo"
-    mask,it=clase(ipv4)
-    usebits=subnet(mask,it,bit)
-    done=True
-    while(done):
-        print("La mascara de subred es: " + prip(mask))
-        subr=input("Que subred buscas? ")
-        if(subred==0 or subred>=(2**usebits)-1):
-            print("No es accesible esa subred")
-        else:
-            result=subred(ipv4,usebits,subr)
+def main(ipi,bit):
+    ip,cl,mask,use=init(ipi,bit)
+    if(use=="error"):
+        print("hubo un error con los bits de subred, favor de revisarlo")
+    elif(use==0):
+        print("There is no space for subnets, would you like to change the subnet length? (y/n) ")
+    else:
+        subnet(ip,cl,use)
+
 
 #me la pelas mamon
 
 
 add="192.168.1.0"
+#add=input("Cual es la ip? ")
 rbits=29
 Bcast="192.168.1.255"
-maskreal="255.255.255.0"
-ip=divide(add)
-print(ip)
-prip(ip)
+main(add,rbits)
