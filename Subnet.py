@@ -78,7 +78,7 @@ def init(ipi,m):
     claseip=clase(ip)
     usebits=m-claseip*8
     if(usebits<1):
-        return ipi,m,"error"
+        return ipi,claseip,m,"error"
     else:
         mask=final_mask(claseip,m)
         return ip,claseip,mask,usebits
@@ -157,8 +157,37 @@ def binarySum(subnet,quantity):
 def union(un,net,host):
     return transform_bits2(un+net+host)
 
-#basado en el numero de bits reservados y la mascara default
-#modifica la mascara para volverla la mascara de subred
+#function that exports the dictionary introduced as parameter
+#into a .txt in the working directory in a readable format
+def export(dict):
+    writer=open("Subnets.txt","w")
+
+    string="The range of the segment (which cannot be used) is:"
+    writer.write(string+"\n" )
+    arr=dict[0]
+    string="Sub_ip= "+arr[0]+", Hosts= "+arr[1]+"-"+arr[2]+" Broadcast= "+arr[3]
+    writer.write(string+"\n" )
+    string="The range of overall broadcast address (which cannot be used) is:"
+    writer.write(string+"\n" )
+    arr=dict[len(dict)-1]
+    string="Sub_ip= "+arr[0]+", Hosts= "+arr[1]+"-"+arr[2]+" Broadcast= "+arr[3]
+    writer.write(string+"\n" )
+    writer.write("\n")
+
+    for x in range(1,len(dict)-1):
+        string="The subnet number "+str(x)
+        writer.write(string+"\n" )
+        arr=dict[x]
+        string="Sub_ip= "+arr[0]+", Hosts= "+arr[1]+"-"+arr[2]+" Broadcast= "+arr[3]
+        writer.write(string+"\n" )
+        writer.write("\n")
+
+
+    writer.close()
+
+#This is the main and most important function because it uses the other functions
+#to be able to give you what you are asking for, all the subnets in a dictionary
+#that will be given to you, but also exported to .txt
 def subnet(ip,cl,bits):
     origin=""
     for x in ip:
@@ -200,6 +229,7 @@ def subnet(ip,cl,bits):
 
         dictionary[len(dictionary)]=component
         bits_subnet=binarySum(bits_subnet,1)
+    export(dictionary)
     return dictionary
 
 
@@ -214,6 +244,10 @@ def main(ipi,bit):
         final=subnet(ip,cl,use)
         for x in final:
             print(final[x])
+        print("Ip de segmento= ")
+        print(final[0])
+        print("Ip de broadcast= ")
+        print(final[len(final)-1])
 
 add="192.168.1.0"
 #add=input("Cual es la ip? ")
