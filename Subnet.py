@@ -3,7 +3,7 @@
 Created on Fri Aug 17 00:03:09 2018
 @author: Jesus Omar Cuenca Espino
 """
-#recibe el ip en forma de string para que lo pueda dividir y procesar acordemente
+#receives the ip in form of a string so it can be divided and proccessed accordingly
 def divide(ip):
     ipf=[0,0,0,0]
     s=""
@@ -29,7 +29,7 @@ def divide(ip):
     ipf[3]=num
     return ipf
 
-#recibe el ip generado por divide y lo clasifica para poder determinar la mascara por default
+#receives the ip generated from divide and then clasifies so it can find the mask by default
 def clase(ip):
     tipo=int(ip[0],2)
     if(tipo<0):
@@ -43,14 +43,14 @@ def clase(ip):
     else:
         return -1
 
-#comprobante que la mascara de subnet no tenga contradicciones
+#checks the subnet mask so there are no contradictions
 def comp(cl,smask):
     for x in range(cl):
         if(smask[x]!=255):
             return True
     return False
 
-#funcion para calcular la mascara de subred
+#function to calculate the subnet mask
 def final_mask(cl,use):
     if(use>30 or use<9):
         return "error"
@@ -71,8 +71,16 @@ def final_mask(cl,use):
     msk[pos]=final
     return msk
 
-#junta los procesos de arriba en uno en automatico
-#y calcula los bits utiles para esas subredes
+#Prints the mask
+def pmask(mask):
+    st=""
+    for x in range(4):
+        st+=str(mask[x])
+        if(x<3):
+            st+='.'
+    return st
+
+#merges the functions above in a single process meant to only be used once
 def init(ipi,m):
     ip=divide(ipi)
     claseip=clase(ip)
@@ -83,31 +91,7 @@ def init(ipi,m):
         mask=final_mask(claseip,m)
         return ip,claseip,mask,usebits
 
-#metodo que acomoda una lista que tenga forma de direccion ip y lo imprime unicamente
-def prip(ip):
-    if(type(ip)!=list):
-        return -1
-    st=""
-    i=0
-    for x in ip:
-        st+=str(int(x,2))
-        if(i<3):
-            st+='.'
-        i+=1
-    #print(st)
-    return st
-
-#acomoda una lista que contenga la mascara para que pueda ser leida
-#tiene que ser una funcion distinta debido a que la ip lo estoy manejando como binario y la mascara como int
-def pmask(mask):
-    st=""
-    for x in range(4):
-        st+=str(mask[x])
-        if(x<3):
-            st+='.'
-    return st
-
-#acomoda los bits que se encuentran en un string largo en una forma similar a la mascara final en forma de bit
+#Makes easier the proccess of conversion into the ipv4 address
 def transform_bits(string):
     if(len(string)<32):
         return "error"
@@ -121,7 +105,7 @@ def transform_bits(string):
             cont+=1
         return res
 
-#acomoda los bits que se encuentran en un string largo en su forma de direccion ipv4
+#Converts a large string into an ordered string in the form of an ipv4 address
 def transform_bits2(string):
     close=transform_bits(string)
     st=""
@@ -136,7 +120,7 @@ def transform_bits2(string):
     res+=str(int(st,2))
     return res
 
-#checa si el string se encuentra en forma que podria ser una direccion de broadcast
+#checks if the input string is a candidate to be a broadcast address
 def broadcast(string):
     for x in string:
         if(x=='0'):
@@ -159,18 +143,24 @@ def union(un,net,host):
 
 #function that exports the dictionary introduced as parameter
 #into a .txt in the working directory in a readable format
-def export(dict):
+def export(dict,mask):
     writer=open("Subnets.txt","w")
 
+    writer.write("\n")
     string="The range of the segment (which cannot be used) is:"
     writer.write(string+"\n" )
     arr=dict[0]
     string="Sub_ip= "+arr[0]+", Hosts= "+arr[1]+"-"+arr[2]+" Broadcast= "+arr[3]
     writer.write(string+"\n" )
+    writer.write("\n")
     string="The range of overall broadcast address (which cannot be used) is:"
     writer.write(string+"\n" )
     arr=dict[len(dict)-1]
-    string="Sub_ip= "+arr[0]+", Hosts= "+arr[1]+"-"+arr[2]+" Broadcast= "+arr[3]
+    string="Sub_ip= "+arr[0]+" Hosts= "+arr[1]+"-"+arr[2]+" Broadcast= "+arr[3]
+    writer.write(string+"\n" )
+    writer.write("\n")
+
+    string="The subnet mask is = "+pmask(mask)
     writer.write(string+"\n" )
     writer.write("\n")
 
@@ -178,7 +168,7 @@ def export(dict):
         string="The subnet number "+str(x)
         writer.write(string+"\n" )
         arr=dict[x]
-        string="Sub_ip= "+arr[0]+", Hosts= "+arr[1]+"-"+arr[2]+" Broadcast= "+arr[3]
+        string="Sub_ip= "+arr[0]+" \tHosts= "+arr[1]+"-"+arr[2]+" \tBroadcast= "+arr[3]
         writer.write(string+"\n" )
         writer.write("\n")
 
@@ -188,7 +178,10 @@ def export(dict):
 #This is the main and most important function because it uses the other functions
 #to be able to give you what you are asking for, all the subnets in a dictionary
 #that will be given to you, but also exported to .txt
-def subnet(ip,cl,bits):
+def subnet(ipi,ubits):
+    ip,cl,mask,bits=init(ipi,ubits)
+    if(bits=="error"):
+        return bits
     origin=""
     for x in ip:
         origin+=x
@@ -229,32 +222,54 @@ def subnet(ip,cl,bits):
 
         dictionary[len(dictionary)]=component
         bits_subnet=binarySum(bits_subnet,1)
-    export(dictionary)
+    export(dictionary,mask)
     return dictionary
 
 
-#el menu y lo que permite manejar la GUI
-def main(ipi,bit):
-    ip,cl,mask,use=init(ipi,bit)
-    if(use=="error"):
-        print("hubo un error con los bits de subred, favor de revisarlo")
-    elif(use==0):
-        print("There is no space for subnets, would you like to change the subnet length? (y/n) ")
+#The menu
+def main():
+    ip=input("What will the ip to subnet be? ")
+    bit=int(input("How many bits shall be reserved for the subnets? "))
+    final=subnet(ip,bit)
+    if(final=="error"):
+        print("There has been an error with the parameters you introduced")
+        print("Please introduce them again")
+        main()
     else:
-        final=subnet(ip,cl,use)
-        for x in final:
-            print(final[x])
-        print("Ip de segmento= ")
-        print(final[0])
-        print("Ip de broadcast= ")
-        print(final[len(final)-1])
+        print("DONE!")
+        cont=True
+        while(cont):
+            valid=True
+            ans=input("What subnet are you looking for? ")
+            if(ans=="end"):
+                cont=False
+                break
+            else:
+                try:
+                    ans=int(ans)
+                except ValueError:
+                    print("That's not a valid number, try again. (type 'end' to finish)")
+                    valid=False
+            if(cont and valid):
+                if(ans==0 or ans==len(final)-1):
+                    print("Remember that you cannot use this range of ip's")
+                    arr=final[ans]
+                    string="Sub_ip= "+arr[0]+" \tHosts= "+arr[1]+"-"+arr[2]+" \tBroadcast= "+arr[3]
+                    print(string)
+                    print("\n")
+                elif(ans>0 and ans<len(final)-1):
+                    arr=final[ans]
+                    string="Sub_ip= "+arr[0]+" \tHosts= "+arr[1]+"-"+arr[2]+" \tBroadcast= "+arr[3]
+                    print(string)
+                    print("\n")
+                else:
+                    print("That number of subnet does not exist in my records")
 
-add="192.168.1.0"
-#add=input("Cual es la ip? ")
-rbits=29
-Bcast="192.168.1.255"
-main(add,rbits)
+    print("Thank you")
+
+
+main()
 
 
 
-#me la pelas puto
+#May the Force be with you
