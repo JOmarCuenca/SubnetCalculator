@@ -121,7 +121,41 @@ def transform_bits(string):
             cont+=1
         return res
 
+#acomoda los bits que se encuentran en un string largo en su forma de direccion ipv4
+def transform_bits2(string):
+    close=transform_bits(string)
+    st=""
+    res=""
+    for x in close:
+        if(x=='.'):
+            st=int(st,2)
+            res+=str(st)+'.'
+            st=""
+        else:
+            st+=x
+    res+=str(int(st,2))
+    return res
 
+#checa si el string se encuentra en forma que podria ser una direccion de broadcast
+def broadcast(string):
+    for x in string:
+        if(x=='0'):
+            return True
+    return False
+
+#Makes possible the iteraton over the subnets
+def binarySum(subnet,quantity):
+    long=len(subnet)
+    num=int(subnet,2)
+    num+=quantity
+    res=bin(int(num))[2:]
+    while(len(res)<long):
+        res='0'+res
+    return res
+
+#makes the union between the different parts of the ip
+def union(un,net,host):
+    return transform_bits2(un+net+host)
 
 #basado en el numero de bits reservados y la mascara default
 #modifica la mascara para volverla la mascara de subred
@@ -133,14 +167,41 @@ def subnet(ip,cl,bits):
     bits_no_usables=cl*8
     for x in range(bits_no_usables):
         unmut+=origin[x]
+
     subnet_init=bits_no_usables+1
     bits_subnet=""
     for x in range(subnet_init,subnet_init+bits):
-        bits_subnet+=origin[x]
-    print(transform_bits(origin))
-    print(unmut)
-    print(bits_subnet)
-    print(origin)
+        bits_subnet+='0'
+
+    bits_usable_zeros=""
+    broad=""
+    for x in range(len(bits_subnet+unmut),len(origin)):
+        broad+='1'
+        bits_usable_zeros+='0'
+    bits_usable_last=binarySum(broad,-1)
+    first=binarySum(bits_usable_zeros,1)
+
+    dictionary={}
+    condition=broadcast(bits_subnet)
+    while(condition):
+        condition=broadcast(bits_subnet)
+        component=["","","",""]
+        #ip of the network
+        component[0]=union(unmut,bits_subnet,bits_usable_zeros)
+
+        #first host
+        component[1]=union(unmut,bits_subnet,first)
+
+        #last host
+        component[2]=union(unmut,bits_subnet,bits_usable_last)
+
+        #broadcast
+        component[3]=union(unmut,bits_subnet,broad)
+
+        dictionary[len(dictionary)]=component
+        bits_subnet=binarySum(bits_subnet,1)
+    return dictionary
+
 
 #el menu y lo que permite manejar la GUI
 def main(ipi,bit):
@@ -150,14 +211,16 @@ def main(ipi,bit):
     elif(use==0):
         print("There is no space for subnets, would you like to change the subnet length? (y/n) ")
     else:
-        subnet(ip,cl,use)
-
-
-#me la pelas mamon
-
+        final=subnet(ip,cl,use)
+        for x in final:
+            print(final[x])
 
 add="192.168.1.0"
 #add=input("Cual es la ip? ")
 rbits=29
 Bcast="192.168.1.255"
 main(add,rbits)
+
+
+
+#me la pelas puto
