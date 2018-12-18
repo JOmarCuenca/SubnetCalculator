@@ -1,0 +1,33 @@
+
+The next subnets are for the ip: 192.168.254.0
+
+The subnet number 1:
+The available hosts in this subnet are:	95
+Sub_ip= 192.168.254.0 	Hosts= 192.168.254.1 - 192.168.254.126 	Broadcast= 192.168.254.127
+The Subnet mask in decimal form is: 25	, the subnet mask is: 255.255.255.128
+
+The subnet number 2:
+The available hosts in this subnet are:	70
+Sub_ip= 192.168.254.128 	Hosts= 192.168.254.129 - 192.168.254.254 	Broadcast= 192.168.254.255
+The Subnet mask in decimal form is: 25	, the subnet mask is: 255.255.255.128
+
+The subnet number 3:
+The available hosts in this subnet are:	50
+Sub_ip= 192.168.255.0 	Hosts= 192.168.255.1 - 192.168.255.62 	Broadcast= 192.168.255.63
+The Subnet mask in decimal form is: 26	, the subnet mask is: 255.255.255.192
+
+The subnet number 4:
+The available hosts in this subnet are:	20
+Sub_ip= 192.168.255.64 	Hosts= 192.168.255.65 - 192.168.255.94 	Broadcast= 192.168.255.95
+The Subnet mask in decimal form is: 27	, the subnet mask is: 255.255.255.224
+
+The subnet number 5:
+The available hosts in this subnet are:	2
+Sub_ip= 192.168.255.96 	Hosts= 192.168.255.97 - 192.168.255.98 	Broadcast= 192.168.255.99
+The Subnet mask in decimal form is: 30	, the subnet mask is: 255.255.255.252
+
+The subnet number 6:
+The available hosts in this subnet are:	2
+Sub_ip= 192.168.255.100 	Hosts= 192.168.255.101 - 192.168.255.102 	Broadcast= 192.168.255.103
+The Subnet mask in decimal form is: 30	, the subnet mask is: 255.255.255.252
+
