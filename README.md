@@ -1,2 +1,1 @@
-# SubnetCalculator for ipv4
-Also VLSM coming soon.
+# SubnetCalculator for ipv4, VLSM calculator module for ipv4 also included
