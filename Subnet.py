@@ -3,49 +3,8 @@
 Created on Fri Aug 17 00:03:09 2018
 @author: Jesus Omar Cuenca Espino
 """
-# receives the ip in form of a string so it can be divided and proccessed accordingly
 
-
-def divide(ip):
-    ipf = [0, 0, 0, 0]
-    s = ""
-    i = 0
-    for x in ip:
-        if (x == '.'):
-            if (int(s) < 256):
-                num = bin(int(s))[2:]
-                while (len(num) < 8):
-                    num = '0'+num
-                ipf[i] = num
-                s = ""
-                i += 1
-            else:
-                return "La ip ingresada esta mal escrita"
-        else:
-            s += x
-    if (int(s) >= 256):
-        return "La ip ingresada esta mal escrita"
-    num = bin(int(s))[2:]
-    while (len(num) < 8):
-        num = '0'+num
-    ipf[3] = num
-    return ipf
-
-# receives the ip generated from divide and then clasifies so it can find the mask by default
-
-
-def clase(ip):
-    tipo = int(ip[0], 2)
-    if (tipo < 0):
-        return -1
-    elif (tipo < 128):
-        return 1
-    elif (tipo < 192):
-        return 2
-    elif (tipo < 224):
-        return 3
-    else:
-        return -1
+from netclasses.ip import IP
 
 # checks the subnet mask so there are no contradictions
 
@@ -94,14 +53,14 @@ def pmask(mask):
 
 
 def init(ipi, m):
-    ip = divide(ipi)
-    claseip = clase(ip)
+    ip = IP(ipi)
+    claseip = ip.ipClass.value
     usebits = m-claseip*8
     if (usebits < 1):
         return ipi, claseip, m, "error"
     else:
         mask = final_mask(claseip, m)
-        return ip, claseip, mask, usebits
+        return ip.ipParts, claseip, mask, usebits
 
 # Makes easier the proccess of conversion into the ipv4 address
 
