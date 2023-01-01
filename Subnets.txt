@@ -1,15 +1,13 @@
-
 The range of the segment (which cannot be used) is:
-Sub_ip= 10.0.0.0, Hosts= 10.0.0.1-10.63.255.254 Broadcast= 10.63.255.255
+Subnet_IP = 10.0.0.0 | Hosts = 10.0.0.1 - 10.63.255.254 | Broadcast = 10.63.255.255
 
 The range of overall broadcast address (which cannot be used) is:
-Sub_ip= 10.192.0.0 Hosts= 10.192.0.1-10.255.255.254 Broadcast= 10.255.255.255
+Subnet_IP = 10.192.0.0 | Hosts = 10.192.0.1 - 10.255.255.254 | Broadcast = 10.255.255.255
 
-The subnet mask is = 255.192.0.0
+The subnet mask is -> 255.192.0.0
 
-The subnet number 1
-Sub_ip= 10.64.0.0 	Hosts= 10.64.0.1-10.127.255.254 	Broadcast= 10.127.255.255
+The subnet number -> 1
+Subnet_IP = 10.64.0.0 | Hosts = 10.64.0.1 - 10.127.255.254 | Broadcast = 10.127.255.255
 
-The subnet number 2
-Sub_ip= 10.128.0.0 	Hosts= 10.128.0.1-10.191.255.254 	Broadcast= 10.191.255.255
-
+The subnet number -> 2
+Subnet_IP = 10.128.0.0 | Hosts = 10.128.0.1 - 10.191.255.254 | Broadcast = 10.191.255.255

@@ -5,6 +5,7 @@ Created on Fri Aug 17 00:03:09 2018
 """
 
 from netclasses.ip import IP
+from netclasses.ip_subnet import IPSubnet, IPSubnetCollection
 
 # checks the subnet mask so there are no contradictions
 
@@ -98,11 +99,7 @@ def transform_bits2(string):
 # checks if the input string is a candidate to be a broadcast address
 
 
-def broadcast(string):
-    for x in string:
-        if (x == '0'):
-            return True
-    return False
+def broadcast(string): return '0' in string
 
 # Makes possible the iteraton over the subnets
 
@@ -111,9 +108,7 @@ def binarySum(subnet, quantity):
     long = len(subnet)
     num = int(subnet, 2)
     num += quantity
-    res = bin(int(num))[2:]
-    while (len(res) < long):
-        res = '0'+res
+    res = IP.intToBinStr(int(num), long)
     return res
 
 # makes the union between the different parts of the ip
@@ -190,7 +185,7 @@ def subnet(ipi, ubits):
     bits_usable_last = binarySum(broad, -1)
     first = binarySum(bits_usable_zeros, 1)
 
-    dictionary = {}
+    dictionary = []
     condition = broadcast(bits_subnet)
     while (condition):
         condition = broadcast(bits_subnet)
@@ -207,55 +202,33 @@ def subnet(ipi, ubits):
         # broadcast
         component[3] = union(unmut, bits_subnet, broad)
 
-        dictionary[len(dictionary)] = component
+        dictionary.append(IPSubnet(
+            IP(component[0]),
+            IP(component[1]),
+            IP(component[2]),
+            IP(component[3]),
+        ))
+
         bits_subnet = binarySum(bits_subnet, 1)
-    export(dictionary, mask)
-    return dictionary
+    # export(dictionary, mask)
+
+    return IPSubnetCollection(
+        segmentIP=dictionary[0],
+        subnets=dictionary[1 : -1],
+        broadcastIP=dictionary[-1],
+        mask=IP(".".join([str(x) for x in mask]))
+    )
 
 
 # The menu
 def main():
     ip = input("What will the ip to subnet be? ")
     bit = int(input("How many bits shall be reserved for the subnets? "))
+    # ip = "10.0.0.0"
+    # bit = 10
     final = subnet(ip, bit)
-    if (final == "error"):
-        print("There has been an error with the parameters you introduced")
-        print("Please introduce them again")
-        main()
-    else:
-        print("DONE!")
-        cont = True
-        while (cont):
-            valid = True
-            ans = input("What subnet are you looking for? ")
-            if (ans == "end"):
-                cont = False
-                break
-            else:
-                try:
-                    ans = int(ans)
-                except ValueError:
-                    print(
-                        "That's not a valid number, try again. (type 'end' to finish)")
-                    valid = False
-            if (cont and valid):
-                if (ans == 0 or ans == len(final)-1):
-                    print("Remember that you cannot use this range of ip's")
-                    arr = final[ans]
-                    string = "Sub_ip= "+arr[0]+" \tHosts= " + \
-                        arr[1]+"-"+arr[2]+" \tBroadcast= "+arr[3]
-                    print(string)
-                    print("\n")
-                elif (ans > 0 and ans < len(final)-1):
-                    arr = final[ans]
-                    string = "Sub_ip= "+arr[0]+" \tHosts= " + \
-                        arr[1]+"-"+arr[2]+" \tBroadcast= "+arr[3]
-                    print(string)
-                    print("\n")
-                else:
-                    print("That number of subnet does not exist in my records")
-
-    print("Thank you")
+    
+    print(final)
 
 
 main()

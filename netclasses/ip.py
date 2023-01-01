@@ -6,9 +6,15 @@ class IP:
         self.ipParts = IP.divide(self.ipString)
         self.ipClass = IPClass.category(int(self.ipParts[0], 2))
 
-    def _intToBinStr(value : int) -> str:
+    def __str__(self) -> str:
+        return self.ipString
+
+    def __eq__(self, __o: object) -> bool:
+        return __o.ipString == self.ipString
+
+    def intToBinStr(value : int, long = 8) -> str:
         s = bin(value)[2:]
-        return s.rjust(8, "0")
+        return s.rjust(long, "0")
 
     def divide(ip : str) -> list[str]:
         """
@@ -23,6 +29,6 @@ class IP:
         for part in ipParts:
             intVal = int(part)
             assert(intVal < 256)
-            ipf.append(IP._intToBinStr(intVal))
+            ipf.append(IP.intToBinStr(intVal))
 
         return ipf
