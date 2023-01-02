@@ -1,2 +1,0 @@
-#This is a modified version so it can be used on some python3 compiler in the phone
-you only need to run the Subnet.py 
