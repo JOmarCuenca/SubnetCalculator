@@ -164,19 +164,17 @@ def subnet(ipi, ubits):
     )
 
 
-# The menu
-def main():
-    # ip = input("What will the ip to subnet be? ")
-    # bit = int(input("How many bits shall be reserved for the subnets? "))
-    ip = "10.0.0.0"
-    bit = 10
-    final = subnet(ip, bit)
-
-    print(final)
-
-
 if __name__ == '__main__':
-    main()
+    from classes.netArgs import ProgramArgs
+
+    args = ProgramArgs.parseArgs()
+    result = subnet(args.ipAddress, args.reservedBits)
+
+    if(args.filename):
+        with open(args.filename, "w") as f:
+            f.write(str(result))
+    else:
+        print(result)
 
 
 # May the Force be with you

@@ -1,13 +1,97 @@
 The range of the segment (which cannot be used) is:
-Subnet_IP = 10.0.0.0 | Hosts = 10.0.0.1 - 10.63.255.254 | Broadcast = 10.63.255.255
+Subnet_IP = 10.0.0.0 | Hosts = 10.0.0.1 - 10.7.255.254 | Broadcast = 10.7.255.255
 
 The range of overall broadcast address (which cannot be used) is:
-Subnet_IP = 10.192.0.0 | Hosts = 10.192.0.1 - 10.255.255.254 | Broadcast = 10.255.255.255
+Subnet_IP = 10.248.0.0 | Hosts = 10.248.0.1 - 10.255.255.254 | Broadcast = 10.255.255.255
 
-The subnet mask is -> 255.192.0.0
+The subnet mask is -> 255.248.0.0
 
 The subnet number -> 1
-Subnet_IP = 10.64.0.0 | Hosts = 10.64.0.1 - 10.127.255.254 | Broadcast = 10.127.255.255
+Subnet_IP = 10.8.0.0 | Hosts = 10.8.0.1 - 10.15.255.254 | Broadcast = 10.15.255.255
 
 The subnet number -> 2
-Subnet_IP = 10.128.0.0 | Hosts = 10.128.0.1 - 10.191.255.254 | Broadcast = 10.191.255.255
+Subnet_IP = 10.16.0.0 | Hosts = 10.16.0.1 - 10.23.255.254 | Broadcast = 10.23.255.255
+
+The subnet number -> 3
+Subnet_IP = 10.24.0.0 | Hosts = 10.24.0.1 - 10.31.255.254 | Broadcast = 10.31.255.255
+
+The subnet number -> 4
+Subnet_IP = 10.32.0.0 | Hosts = 10.32.0.1 - 10.39.255.254 | Broadcast = 10.39.255.255
+
+The subnet number -> 5
+Subnet_IP = 10.40.0.0 | Hosts = 10.40.0.1 - 10.47.255.254 | Broadcast = 10.47.255.255
+
+The subnet number -> 6
+Subnet_IP = 10.48.0.0 | Hosts = 10.48.0.1 - 10.55.255.254 | Broadcast = 10.55.255.255
+
+The subnet number -> 7
+Subnet_IP = 10.56.0.0 | Hosts = 10.56.0.1 - 10.63.255.254 | Broadcast = 10.63.255.255
+
+The subnet number -> 8
+Subnet_IP = 10.64.0.0 | Hosts = 10.64.0.1 - 10.71.255.254 | Broadcast = 10.71.255.255
+
+The subnet number -> 9
+Subnet_IP = 10.72.0.0 | Hosts = 10.72.0.1 - 10.79.255.254 | Broadcast = 10.79.255.255
+
+The subnet number -> 10
+Subnet_IP = 10.80.0.0 | Hosts = 10.80.0.1 - 10.87.255.254 | Broadcast = 10.87.255.255
+
+The subnet number -> 11
+Subnet_IP = 10.88.0.0 | Hosts = 10.88.0.1 - 10.95.255.254 | Broadcast = 10.95.255.255
+
+The subnet number -> 12
+Subnet_IP = 10.96.0.0 | Hosts = 10.96.0.1 - 10.103.255.254 | Broadcast = 10.103.255.255
+
+The subnet number -> 13
+Subnet_IP = 10.104.0.0 | Hosts = 10.104.0.1 - 10.111.255.254 | Broadcast = 10.111.255.255
+
+The subnet number -> 14
+Subnet_IP = 10.112.0.0 | Hosts = 10.112.0.1 - 10.119.255.254 | Broadcast = 10.119.255.255
+
+The subnet number -> 15
+Subnet_IP = 10.120.0.0 | Hosts = 10.120.0.1 - 10.127.255.254 | Broadcast = 10.127.255.255
+
+The subnet number -> 16
+Subnet_IP = 10.128.0.0 | Hosts = 10.128.0.1 - 10.135.255.254 | Broadcast = 10.135.255.255
+
+The subnet number -> 17
+Subnet_IP = 10.136.0.0 | Hosts = 10.136.0.1 - 10.143.255.254 | Broadcast = 10.143.255.255
+
+The subnet number -> 18
+Subnet_IP = 10.144.0.0 | Hosts = 10.144.0.1 - 10.151.255.254 | Broadcast = 10.151.255.255
+
+The subnet number -> 19
+Subnet_IP = 10.152.0.0 | Hosts = 10.152.0.1 - 10.159.255.254 | Broadcast = 10.159.255.255
+
+The subnet number -> 20
+Subnet_IP = 10.160.0.0 | Hosts = 10.160.0.1 - 10.167.255.254 | Broadcast = 10.167.255.255
+
+The subnet number -> 21
+Subnet_IP = 10.168.0.0 | Hosts = 10.168.0.1 - 10.175.255.254 | Broadcast = 10.175.255.255
+
+The subnet number -> 22
+Subnet_IP = 10.176.0.0 | Hosts = 10.176.0.1 - 10.183.255.254 | Broadcast = 10.183.255.255
+
+The subnet number -> 23
+Subnet_IP = 10.184.0.0 | Hosts = 10.184.0.1 - 10.191.255.254 | Broadcast = 10.191.255.255
+
+The subnet number -> 24
+Subnet_IP = 10.192.0.0 | Hosts = 10.192.0.1 - 10.199.255.254 | Broadcast = 10.199.255.255
+
+The subnet number -> 25
+Subnet_IP = 10.200.0.0 | Hosts = 10.200.0.1 - 10.207.255.254 | Broadcast = 10.207.255.255
+
+The subnet number -> 26
+Subnet_IP = 10.208.0.0 | Hosts = 10.208.0.1 - 10.215.255.254 | Broadcast = 10.215.255.255
+
+The subnet number -> 27
+Subnet_IP = 10.216.0.0 | Hosts = 10.216.0.1 - 10.223.255.254 | Broadcast = 10.223.255.255
+
+The subnet number -> 28
+Subnet_IP = 10.224.0.0 | Hosts = 10.224.0.1 - 10.231.255.254 | Broadcast = 10.231.255.255
+
+The subnet number -> 29
+Subnet_IP = 10.232.0.0 | Hosts = 10.232.0.1 - 10.239.255.254 | Broadcast = 10.239.255.255
+
+The subnet number -> 30
+Subnet_IP = 10.240.0.0 | Hosts = 10.240.0.1 - 10.247.255.254 | Broadcast = 10.247.255.255

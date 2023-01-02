@@ -1,0 +1,27 @@
+from dataclasses import dataclass
+from argparse import ArgumentParser
+
+
+@dataclass(frozen=True)
+class ProgramArgs:
+    ipAddress: str
+    reservedBits: int
+    filename: str | None
+
+    def parseArgs():
+        parser = ArgumentParser(
+            prog='Subnet Calculator',
+            description='This program calculates subnets from an ip V4, using reserved bits',
+            epilog='May the force be with you',
+        )
+
+        parser.add_argument("ipAddress", type=str,
+                            help="IP V4 address to subnet",)
+        parser.add_argument("reservedBits", type=int,
+                            help="Bits to be used by the subnets",)
+        parser.add_argument("-o", type=str, nargs='?',
+                            help="If you wanna export the result send as a param the filename to export", dest="filename")
+
+        args = parser.parse_args()
+
+        return ProgramArgs(args.ipAddress, args.reservedBits, filename=args.filename)
