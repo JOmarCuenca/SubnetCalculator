@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from .ip_class import IPClass
 
 class IP:
@@ -32,3 +33,19 @@ class IP:
             ipf.append(IP.intToBinStr(intVal))
 
         return ipf
+
+@dataclass(frozen=True, eq=True)
+class IPSubnet:
+    subnetIP: IP
+    firstHost: IP
+    lastHost:  IP
+    broadcastIP: IP
+
+    def __str__(self) -> str:
+        parts = [
+            f"Subnet_IP = {self.subnetIP}",
+            f"Hosts = {self.firstHost} - {self.lastHost}",
+            f"Broadcast = {self.broadcastIP}",
+        ]
+
+        return " | ".join(parts)

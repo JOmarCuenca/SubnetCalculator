@@ -1,22 +1,5 @@
 from dataclasses import dataclass
-from .ip import IP
-
-
-@dataclass(frozen=True, eq=True)
-class IPSubnet:
-    subnetIP: IP
-    firstHost: IP
-    lastHost:  IP
-    broadcastIP: IP
-
-    def __str__(self) -> str:
-        parts = [
-            f"Subnet_IP = {self.subnetIP}",
-            f"Hosts = {self.firstHost} - {self.lastHost}",
-            f"Broadcast = {self.broadcastIP}",
-        ]
-
-        return " | ".join(parts)
+from .ip import IP, IPSubnet
 
 
 @dataclass(frozen=True, eq=True)
@@ -24,8 +7,7 @@ class IPSubnetCollection:
     segmentIP: IPSubnet
     subnets: list[IPSubnet]
     broadcastIP: IPSubnet
-    
-    mask : IP
+    mask: IP
 
     def __str__(self) -> str:
         parts = [
@@ -47,9 +29,6 @@ class IPSubnetCollection:
             ])
 
         return "\n".join(parts).rstrip()
-
-    
-
 
 if __name__ == '__main__':
     print(IPSubnet(

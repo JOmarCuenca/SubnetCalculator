@@ -71,7 +71,7 @@ def _separateIPSectionBinary(string) -> str:
     ])
 
 
-def _transformBitsIntoIPString(string) -> str:
+def transformBitsIntoIPString(string) -> str:
     """
     Separate the binary string into 4 ip sections and returns them in decimal integers.
     """
@@ -105,7 +105,7 @@ def binarySum(subnet, quantity):
 
 
 def union(un, net, host):
-    return _transformBitsIntoIPString(un+net+host)
+    return transformBitsIntoIPString(un+net+host)
 
 # This is the main and most important function because it uses the other functions
 # to be able to give you what you are asking for, all the subnets in a dictionary
@@ -145,13 +145,13 @@ def subnet(ipi, ubits):
 
         dictionary.append(IPSubnet(
             # ip of the network
-            IP(_transformBitsIntoIPString(unmut + bits_subnet + bits_usable_zeros)),
+            IP(transformBitsIntoIPString(unmut + bits_subnet + bits_usable_zeros)),
             # first host
-            IP(_transformBitsIntoIPString(unmut + bits_subnet + first)),
+            IP(transformBitsIntoIPString(unmut + bits_subnet + first)),
             # last host
-            IP(_transformBitsIntoIPString(unmut + bits_subnet + bits_usable_last)),
+            IP(transformBitsIntoIPString(unmut + bits_subnet + bits_usable_last)),
             # broadcast
-            IP(_transformBitsIntoIPString(unmut + bits_subnet + broad)),
+            IP(transformBitsIntoIPString(unmut + bits_subnet + broad)),
         ))
 
         bits_subnet = binarySum(bits_subnet, 1)
@@ -165,9 +165,9 @@ def subnet(ipi, ubits):
 
 
 if __name__ == '__main__':
-    from classes.netArgs import ProgramArgs
+    from classes.netArgs import SubnetArgs
 
-    args = ProgramArgs.parseArgs()
+    args = SubnetArgs.parseArgs()
     result = subnet(args.ipAddress, args.reservedBits)
 
     if(args.filename):
