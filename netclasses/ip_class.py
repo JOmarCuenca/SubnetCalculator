@@ -7,6 +7,9 @@ class IPClass(Enum):
     D = 4
     E = 5
 
+    def reservedBits(self) -> int:
+        return self.value * 8
+
     def category(binaryNum : int):
         assert(binaryNum > 0 and binaryNum < 256)
 

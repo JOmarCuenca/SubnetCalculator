@@ -1,6 +1,6 @@
 # It is necessary to import from Subnet.py
 # otherwise it will not work
-from Subnet import divide, clase, transform_bits2, binarySum
+from Subnet import divide, clase, _transformBitsIntoIPString, binarySum
 
 # bubbleSort inverted
 
@@ -63,10 +63,10 @@ def broad(quantity):
 
 def permut(noTouch, net, id, first, last, broad):
     always = noTouch+net
-    ip = transform_bits2(always+id)
-    fhost = transform_bits2(always+first)
-    lhost = transform_bits2(always+last)
-    broadcast = transform_bits2(always+broad)
+    ip = _transformBitsIntoIPString(always+id)
+    fhost = _transformBitsIntoIPString(always+first)
+    lhost = _transformBitsIntoIPString(always+last)
+    broadcast = _transformBitsIntoIPString(always+broad)
     return [ip, fhost, lhost, broadcast]
 
 # creates the mask for the Subnet using the bits dedicated for the hosts
@@ -78,7 +78,7 @@ def mask(host):
         mask += '1'
     for x in range(host):
         mask += '0'
-    return transform_bits2(mask)
+    return _transformBitsIntoIPString(mask)
 
 # module that makes the actual subnetting
 

@@ -10,101 +10,91 @@ from netclasses.ip_subnet import IPSubnet, IPSubnetCollection
 # checks the subnet mask so there are no contradictions
 
 
-def comp(cl, smask):
-    for x in range(cl):
-        if (smask[x] != 255):
-            return True
-    return False
+def _maskIsValid(currentMask: list[int]):
+    return all([val == 255 for val in currentMask])
 
 # function to calculate the subnet mask
 
 
-def final_mask(cl, use):
-    if (use > 30 or use < 9):
-        return "error"
-    msk = [0, 0, 0, 0]
-    pos = 0
-    while (use > 8):
-        msk[pos] = 255
-        pos += 1
-        use -= 8
-    if (comp(cl, msk)):
-        return "error"
+def _generateMask(maskBitsToUse: int) -> IP:
+    """
+    Calculates the subnet mask
+    """
+
+    assert (9 <= maskBitsToUse <= 30)
+
+    reservedBits = maskBitsToUse // 8
+
+    msk = [255] * reservedBits
+
+    assert (_maskIsValid(msk))
+
+    maskBitsToUse = maskBitsToUse % 8
+
     count = 7
     final = 0
-    while (use > 0):
+    while (maskBitsToUse > 0):
         final += 2**count
         count -= 1
-        use -= 1
-    msk[pos] = final
-    return msk
+        maskBitsToUse -= 1
 
-# Prints the mask
+    msk.append(final)
 
+    while (len(msk) < 4):
+        msk.append(0)
 
-def pmask(mask):
-    st = ""
-    for x in range(4):
-        st += str(mask[x])
-        if (x < 3):
-            st += '.'
-    return st
+    return IP('.'.join([str(c) for c in msk]))
 
 # merges the functions above in a single process meant to only be used once
 
 
 def init(ipi, m):
     ip = IP(ipi)
-    claseip = ip.ipClass.value
-    usebits = m-claseip*8
-    if (usebits < 1):
-        return ipi, claseip, m, "error"
-    else:
-        mask = final_mask(claseip, m)
-        return ip.ipParts, claseip, mask, usebits
-
-# Makes easier the proccess of conversion into the ipv4 address
+    claseip = ip.ipClass
+    usebits = m-ip.ipClass.reservedBits()
+    assert (usebits > 0)
+    mask = _generateMask(m)
+    return ip.ipParts, claseip.value, mask, usebits
 
 
-def transform_bits(string):
-    if (len(string) < 32):
-        return "error"
-    else:
-        cont = 0
-        res = ""
-        while (cont < 32):
-            if (cont in [8, 16, 24]):
-                res += '.'
-            res += string[cont]
-            cont += 1
-        return res
+def _separateIPSectionBinary(string) -> str:
+    """
+    Separates a string of binary characters using '.' into chunks of 8 sized length
 
-# Converts a large string into an ordered string in the form of an ipv4 address
+    This to correctly separate each ip section.
+    """
+    assert (len(string) == 32)
+    n = 8
+    return '.'.join([
+        string[i:i+n]
+        for i in range(0, 32, 8)
+    ])
 
 
-def transform_bits2(string):
-    close = transform_bits(string)
-    st = ""
-    res = ""
-    for x in close:
-        if (x == '.'):
-            st = int(st, 2)
-            res += str(st)+'.'
-            st = ""
-        else:
-            st += x
-    res += str(int(st, 2))
-    return res
+def _transformBitsIntoIPString(string) -> str:
+    """
+    Separate the binary string into 4 ip sections and returns them in decimal integers.
+    """
+    binarySeparatedIPAddress = _separateIPSectionBinary(string)
+
+    ipSectionsDecimal = [
+        str(int(section, 2))
+        for section in binarySeparatedIPAddress.split('.')
+    ]
+
+    return '.'.join(ipSectionsDecimal)
+
 
 # checks if the input string is a candidate to be a broadcast address
-
-
 def broadcast(string): return '0' in string
 
 # Makes possible the iteraton over the subnets
 
 
 def binarySum(subnet, quantity):
+    """
+    Adds `quantity` to the `subnet` value and returns the value in binary form.
+    """
     long = len(subnet)
     num = int(subnet, 2)
     num += quantity
@@ -115,45 +105,7 @@ def binarySum(subnet, quantity):
 
 
 def union(un, net, host):
-    return transform_bits2(un+net+host)
-
-# function that exports the dictionary introduced as parameter
-# into a .txt in the working directory in a readable format
-
-
-def export(dict, mask):
-    writer = open("Subnets.txt", "w")
-
-    writer.write("\n")
-    string = "The range of the segment (which cannot be used) is:"
-    writer.write(string+"\n")
-    arr = dict[0]
-    string = "Sub_ip= "+arr[0]+", Hosts= " + \
-        arr[1]+"-"+arr[2]+" Broadcast= "+arr[3]
-    writer.write(string+"\n")
-    writer.write("\n")
-    string = "The range of overall broadcast address (which cannot be used) is:"
-    writer.write(string+"\n")
-    arr = dict[len(dict)-1]
-    string = "Sub_ip= "+arr[0]+" Hosts= " + \
-        arr[1]+"-"+arr[2]+" Broadcast= "+arr[3]
-    writer.write(string+"\n")
-    writer.write("\n")
-
-    string = "The subnet mask is = "+pmask(mask)
-    writer.write(string+"\n")
-    writer.write("\n")
-
-    for x in range(1, len(dict)-1):
-        string = "The subnet number "+str(x)
-        writer.write(string+"\n")
-        arr = dict[x]
-        string = "Sub_ip= "+arr[0]+" \tHosts= " + \
-            arr[1]+"-"+arr[2]+" \tBroadcast= "+arr[3]
-        writer.write(string+"\n")
-        writer.write("\n")
-
-    writer.close()
+    return _transformBitsIntoIPString(un+net+host)
 
 # This is the main and most important function because it uses the other functions
 # to be able to give you what you are asking for, all the subnets in a dictionary
@@ -186,52 +138,45 @@ def subnet(ipi, ubits):
     first = binarySum(bits_usable_zeros, 1)
 
     dictionary = []
-    condition = broadcast(bits_subnet)
-    while (condition):
-        condition = broadcast(bits_subnet)
-        component = ["", "", "", ""]
-        # ip of the network
-        component[0] = union(unmut, bits_subnet, bits_usable_zeros)
+    targetSubnetReached = broadcast(bits_subnet)
 
-        # first host
-        component[1] = union(unmut, bits_subnet, first)
-
-        # last host
-        component[2] = union(unmut, bits_subnet, bits_usable_last)
-
-        # broadcast
-        component[3] = union(unmut, bits_subnet, broad)
+    while targetSubnetReached:
+        targetSubnetReached = broadcast(bits_subnet)
 
         dictionary.append(IPSubnet(
-            IP(component[0]),
-            IP(component[1]),
-            IP(component[2]),
-            IP(component[3]),
+            # ip of the network
+            IP(_transformBitsIntoIPString(unmut + bits_subnet + bits_usable_zeros)),
+            # first host
+            IP(_transformBitsIntoIPString(unmut + bits_subnet + first)),
+            # last host
+            IP(_transformBitsIntoIPString(unmut + bits_subnet + bits_usable_last)),
+            # broadcast
+            IP(_transformBitsIntoIPString(unmut + bits_subnet + broad)),
         ))
 
         bits_subnet = binarySum(bits_subnet, 1)
-    # export(dictionary, mask)
 
     return IPSubnetCollection(
         segmentIP=dictionary[0],
-        subnets=dictionary[1 : -1],
+        subnets=dictionary[1: -1],
         broadcastIP=dictionary[-1],
-        mask=IP(".".join([str(x) for x in mask]))
+        mask=mask
     )
 
 
 # The menu
 def main():
-    ip = input("What will the ip to subnet be? ")
-    bit = int(input("How many bits shall be reserved for the subnets? "))
-    # ip = "10.0.0.0"
-    # bit = 10
+    # ip = input("What will the ip to subnet be? ")
+    # bit = int(input("How many bits shall be reserved for the subnets? "))
+    ip = "10.0.0.0"
+    bit = 10
     final = subnet(ip, bit)
-    
+
     print(final)
 
 
-main()
+if __name__ == '__main__':
+    main()
 
 
 # May the Force be with you
