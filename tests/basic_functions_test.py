@@ -9,7 +9,7 @@ class IPClasses_Tests(unittest.TestCase):
         ip = IP(common.IP_ADDRESS)
         self.assertEqual(ip.ipClass, IPClass.A)
 
-        for ipPart in ip.ipParts:
+        for ipPart in ip.ipBinaryParts:
             self.assertEquals(len(ipPart), 8)
 
     def test_equivalence(self):

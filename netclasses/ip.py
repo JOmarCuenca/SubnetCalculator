@@ -4,8 +4,8 @@ from .ip_class import IPClass
 class IP:
     def __init__(self, ipString : str):
         self.ipString = ipString
-        self.ipParts = IP.divide(self.ipString)
-        self.ipClass = IPClass.category(int(self.ipParts[0], 2))
+        self.ipBinaryParts = IP.divide(self.ipString)
+        self.ipClass = IPClass.category(int(self.ipBinaryParts[0], 2))
 
     def __str__(self) -> str:
         return self.ipString

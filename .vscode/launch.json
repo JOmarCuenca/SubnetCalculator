@@ -12,6 +12,16 @@
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": ["10.0.0.0", "10"]
+        },
+        {
+            "name": "VLSM program",
+            "type": "python",
+            "request": "launch",
+            "program": "VLSM.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["192.168.254.0", "[95, 70, 50, 20, 2, 2]"]
         }
-    ]
+    ],
+    
 }

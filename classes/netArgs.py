@@ -46,7 +46,7 @@ class VLSMArgs(NetArgs):
 
         parser.add_argument("ipAddress", type=str,
                             help="IP V4 address to subnet",)
-        parser.add_argument("subnets", type=list[int],
+        parser.add_argument("subnets", type=int, nargs="+",
                             help="Subnets to be calculated",)
         parser.add_argument("-o", type=str, nargs='?',
                             help="If you wanna export the result send as a param the filename to export", dest="filename")

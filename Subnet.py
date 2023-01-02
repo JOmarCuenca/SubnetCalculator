@@ -7,14 +7,11 @@ Created on Fri Aug 17 00:03:09 2018
 from netclasses.ip import IP
 from netclasses.ip_subnet import IPSubnet, IPSubnetCollection
 
-# checks the subnet mask so there are no contradictions
-
-
 def _maskIsValid(currentMask: list[int]):
+    """
+    Checks the subnet mask so there are no contradictions
+    """
     return all([val == 255 for val in currentMask])
-
-# function to calculate the subnet mask
-
 
 def _generateMask(maskBitsToUse: int) -> IP:
     """
@@ -54,7 +51,7 @@ def init(ipi, m):
     usebits = m-ip.ipClass.reservedBits()
     assert (usebits > 0)
     mask = _generateMask(m)
-    return ip.ipParts, claseip.value, mask, usebits
+    return ip.ipBinaryParts, claseip.value, mask, usebits
 
 
 def _separateIPSectionBinary(string) -> str:
@@ -86,33 +83,28 @@ def transformBitsIntoIPString(string) -> str:
 
 
 # checks if the input string is a candidate to be a broadcast address
-def broadcast(string): return '0' in string
+def isNotBroadcast(value : str): return '0' in value
 
 # Makes possible the iteraton over the subnets
 
 
-def binarySum(subnet, quantity):
+def binarySum(subnet : str, quantity : int):
     """
     Adds `quantity` to the `subnet` value and returns the value in binary form.
     """
+    assert(subnet)
     long = len(subnet)
     num = int(subnet, 2)
     num += quantity
     res = IP.intToBinStr(int(num), long)
     return res
 
-# makes the union between the different parts of the ip
-
-
-def union(un, net, host):
-    return transformBitsIntoIPString(un+net+host)
-
 # This is the main and most important function because it uses the other functions
 # to be able to give you what you are asking for, all the subnets in a dictionary
 # that will be given to you, but also exported to .txt
 
 
-def subnet(ipi, ubits):
+def subnetGenerator(ipi, ubits):
     ip, cl, mask, bits = init(ipi, ubits)
     if (bits == "error"):
         return bits
@@ -138,10 +130,10 @@ def subnet(ipi, ubits):
     first = binarySum(bits_usable_zeros, 1)
 
     dictionary = []
-    targetSubnetReached = broadcast(bits_subnet)
+    targetSubnetReached = isNotBroadcast(bits_subnet)
 
     while targetSubnetReached:
-        targetSubnetReached = broadcast(bits_subnet)
+        targetSubnetReached = isNotBroadcast(bits_subnet)
 
         dictionary.append(IPSubnet(
             # ip of the network
@@ -168,7 +160,7 @@ if __name__ == '__main__':
     from classes.netArgs import SubnetArgs
 
     args = SubnetArgs.parseArgs()
-    result = subnet(args.ipAddress, args.reservedBits)
+    result = subnetGenerator(args.ipAddress, args.reservedBits)
 
     if(args.filename):
         with open(args.filename, "w") as f:
