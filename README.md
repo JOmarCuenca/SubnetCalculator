@@ -31,7 +31,7 @@ python3 VLSM.py 192.168.254.0 95 70 2 2
 or if you want to export the result into a file for further reading.
 
 ```bash 
-python3 VLSM.py 192.168.254.0 95 70 2 2 -o VLSM.txt
+python3 VLSM.py 192.168.254.0 95 70 2 2 -o dumps/VLSM.txt
 ```
 
 ## Environment
