@@ -1,5 +1,5 @@
 import unittest
-from Subnet import subnetGenerator
+from Subnet import subnet_generator
 from netclasses.ip import IP
 from netclasses.ip_subnet import IPSubnetCollection, IPSubnet
 import common
@@ -37,7 +37,7 @@ class Integration_Test(unittest.TestCase):
             mask=IP('255.192.0.0'),
         )
 
-        result = subnetGenerator(common.IP_ADDRESS, common.RESERVED_BITS)
+        result = subnet_generator(common.IP_ADDRESS, common.RESERVED_BITS)
 
         self.assertEqual(target, result)
 

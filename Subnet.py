@@ -7,11 +7,13 @@ Created on Fri Aug 17 00:03:09 2018
 from netclasses.ip import IP
 from netclasses.ip_subnet import IPSubnet, IPSubnetCollection
 
-def _maskIsValid(currentMask: list[int]):
-    """Checks the subnet mask so there are no contradictions."""
-    return all([val == 255 for val in currentMask])
 
-def _generateMask(maskBitsToUse: int) -> IP:
+def _is_mask_valid(currentMask: list[int]):
+    """Checks the subnet mask so there are no contradictions."""
+    return all(val == 255 for val in currentMask)
+
+
+def _generate_mask(maskBitsToUse: int) -> IP:
     """Calculates the subnet mask."""
 
     assert (9 <= maskBitsToUse <= 30)
@@ -20,23 +22,17 @@ def _generateMask(maskBitsToUse: int) -> IP:
 
     msk = [255] * reservedBits
 
-    assert (_maskIsValid(msk))
+    assert (_is_mask_valid(msk))
 
-    maskBitsToUse = maskBitsToUse % 8
+    maskBitsToUse %= 8
 
-    count = 7
-    final = 0
-    while (maskBitsToUse > 0):
-        final += 2**count
-        count -= 1
-        maskBitsToUse -= 1
+    final = sum(2**count for count in range(7, 7 - maskBitsToUse, -1))
 
     msk.append(final)
 
-    while (len(msk) < 4):
-        msk.append(0)
+    msk.extend([0] * (4 - len(msk)))
 
-    return IP('.'.join([str(c) for c in msk]))
+    return IP('.'.join(map(str, msk)))
 
 # merges the functions above in a single process meant to only be used once
 
@@ -46,11 +42,11 @@ def init(ipi, m):
     claseip = ip.ipClass
     usebits = m-ip.ipClass.reserved_bits
     assert (usebits > 0)
-    mask = _generateMask(m)
+    mask = _generate_mask(m)
     return ip.ipBinaryParts, claseip.value, mask, usebits
 
 
-def _separateIPSectionBinary(string) -> str:
+def _separate_ip_section_binary(string) -> str:
     """Separates a string of binary characters using '.' into chunks of 8 sized
     length.
 
@@ -58,16 +54,16 @@ def _separateIPSectionBinary(string) -> str:
     """
     assert (len(string) == 32)
     n = 8
-    return '.'.join([
+    return '.'.join(
         string[i:i+n]
         for i in range(0, 32, 8)
-    ])
+    )
 
 
-def transformBitsIntoIPString(string) -> str:
+def transform_bits_into_ip_string(string) -> str:
     """Separate the binary string into 4 ip sections and returns them in
     decimal integers."""
-    binarySeparatedIPAddress = _separateIPSectionBinary(string)
+    binarySeparatedIPAddress = _separate_ip_section_binary(string)
 
     ipSectionsDecimal = [
         str(int(section, 2))
@@ -78,19 +74,19 @@ def transformBitsIntoIPString(string) -> str:
 
 
 # checks if the input string is a candidate to be a broadcast address
-def isNotBroadcast(value : str): return '0' in value
+def is_not_broadcast(value: str): return '0' in value
 
 # Makes possible the iteraton over the subnets
 
 
-def binarySum(subnet : str, quantity : int):
+def binary_sum(subnet: str, quantity: int):
     """Adds `quantity` to the `subnet` value and returns the value in binary
     form."""
-    assert(subnet)
+    assert (subnet)
     long = len(subnet)
     num = int(subnet, 2)
     num += quantity
-    res = IP.intToBinStr(int(num), long)
+    res = IP.int_to_bin_str(int(num), long)
     return res
 
 # This is the main and most important function because it uses the other functions
@@ -98,7 +94,7 @@ def binarySum(subnet : str, quantity : int):
 # that will be given to you, but also exported to .txt
 
 
-def subnetGenerator(ipi, ubits):
+def subnet_generator(ipi, ubits):
     ip, cl, mask, bits = init(ipi, ubits)
     if (bits == 'error'):
         return bits
@@ -120,29 +116,37 @@ def subnetGenerator(ipi, ubits):
     for x in range(len(bits_subnet+unmut), len(origin)):
         broad += '1'
         bits_usable_zeros += '0'
-    bits_usable_last = binarySum(broad, -1)
-    first = binarySum(bits_usable_zeros, 1)
+    bits_usable_last = binary_sum(broad, -1)
+    first = binary_sum(bits_usable_zeros, 1)
 
     dictionary = []
-    targetSubnetReached = isNotBroadcast(bits_subnet)
+    targetSubnetReached = is_not_broadcast(bits_subnet)
 
     while targetSubnetReached:
-        targetSubnetReached = isNotBroadcast(bits_subnet)
+        targetSubnetReached = is_not_broadcast(bits_subnet)
 
         dictionary.append(
             IPSubnet(
                 # ip of the network
-                IP(transformBitsIntoIPString(unmut + bits_subnet + bits_usable_zeros)),
+                IP(
+                    transform_bits_into_ip_string(
+                    unmut + bits_subnet + bits_usable_zeros,
+                    ),
+                ),
                 # first host
-                IP(transformBitsIntoIPString(unmut + bits_subnet + first)),
+                IP(transform_bits_into_ip_string(unmut + bits_subnet + first)),
                 # last host
-                IP(transformBitsIntoIPString(unmut + bits_subnet + bits_usable_last)),
+                IP(
+                    transform_bits_into_ip_string(
+                    unmut + bits_subnet + bits_usable_last,
+                    ),
+                ),
                 # broadcast
-                IP(transformBitsIntoIPString(unmut + bits_subnet + broad)),
+                IP(transform_bits_into_ip_string(unmut + bits_subnet + broad)),
             ),
         )
 
-        bits_subnet = binarySum(bits_subnet, 1)
+        bits_subnet = binary_sum(bits_subnet, 1)
 
     return IPSubnetCollection(
         segmentIP=dictionary[0],
@@ -155,10 +159,10 @@ def subnetGenerator(ipi, ubits):
 if __name__ == '__main__':
     from classes.netArgs import SubnetArgs
 
-    args = SubnetArgs.parseArgs()
-    result = subnetGenerator(args.ipAddress, args.reservedBits)
+    args = SubnetArgs.parse_args()
+    result = subnet_generator(args.ipAddress, args.reservedBits)
 
-    if(args.filename):
+    if (args.filename):
         with open(args.filename, 'w') as f:
             f.write(str(result))
     else:

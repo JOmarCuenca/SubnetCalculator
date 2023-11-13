@@ -1,6 +1,6 @@
 # It is necessary to import from Subnet.py
 # otherwise it will not work
-from Subnet import transformBitsIntoIPString, binarySum
+from Subnet import transform_bits_into_ip_string, binary_sum
 from classes.netArgs import VLSMArgs
 from netclasses.ip import IP, IPSubnet
 from netclasses.ip_vlsm import IPVLSMSubnet, IPVLSMSubnetCollection
@@ -10,11 +10,7 @@ from netclasses.ip_vlsm import IPVLSMSubnet, IPVLSMSubnetCollection
 # in string form and deduces its class
 
 
-def reverseSort(arr: list):
-    return list(reversed(sorted(arr)))
-
-
-def _calculateMaskSize(size):
+def _calculate_mask_size(size):
     """Calculates the requiered bits in order for the hosts to work."""
     res = 0
     while (True):
@@ -25,7 +21,7 @@ def _calculateMaskSize(size):
             res += 1
 
 
-def _broadcastAddressGenerator(quantity: int):
+def _broadcast_address_generator(quantity: str):
     """Creates the string for the broadcast of that subnet."""
     return '1' * len(quantity)
 
@@ -33,29 +29,29 @@ def _broadcastAddressGenerator(quantity: int):
 # IP,hosts,broadcast
 
 
-def _joinSubnetParts(unmutableBits: str, networkBits: str, subnetIdAddress: str, firstHostAddress: str, lastHostAddress: str, broadcastAddress: str) -> IPSubnet:
+def _join_subnet_parts(unmutableBits: str, networkBits: str, subnetIdAddress: str, firstHostAddress: str, lastHostAddress: str, broadcastAddress: str) -> IPSubnet:
     always = unmutableBits+networkBits
     return IPSubnet(
-        subnetIP=IP(transformBitsIntoIPString(always+subnetIdAddress)),
-        firstHost=IP(transformBitsIntoIPString(always+firstHostAddress)),
-        lastHost=IP(transformBitsIntoIPString(always+lastHostAddress)),
-        broadcastIP=IP(transformBitsIntoIPString(always+broadcastAddress)),
+        subnetIP=IP(transform_bits_into_ip_string(always+subnetIdAddress)),
+        firstHost=IP(transform_bits_into_ip_string(always+firstHostAddress)),
+        lastHost=IP(transform_bits_into_ip_string(always+lastHostAddress)),
+        broadcastIP=IP(transform_bits_into_ip_string(always+broadcastAddress)),
     )
 
 
-def generateMaskFromHosts(host) -> IP:
+def generate_mask_from_hosts(host) -> IP:
     """Creates the mask for the Subnet using the bits dedicated for the
     hosts."""
     mask = '1' * (32 - host) + '0' * host
-    return IP(transformBitsIntoIPString(mask))
+    return IP(transform_bits_into_ip_string(mask))
 
 # module that makes the actual subnetting
 
 
-def _generateVLSMSubnet(ip: IP, subnetSize: int) -> tuple[IPVLSMSubnet, IP]:
+def _generate_vlsm_subnet(ip: IP, subnetSize: int) -> tuple[IPVLSMSubnet, IP]:
     binaryAddress = ''.join(ip.ipBinaryParts)
     reservedBits, availableBits = ip.ipClass.reserved_bits, ip.ipClass.available_bits
-    hostBits = _calculateMaskSize(subnetSize)
+    hostBits = _calculate_mask_size(subnetSize)
 
     unmutableIPAddress, networkIPAddress, subnetIPaddress = binaryAddress[:reservedBits], binaryAddress[
         reservedBits: reservedBits + (
@@ -63,32 +59,30 @@ def _generateVLSMSubnet(ip: IP, subnetSize: int) -> tuple[IPVLSMSubnet, IP]:
         )
     ], binaryAddress[reservedBits + (availableBits - hostBits):]
 
-    fhost = binarySum(subnetIPaddress, 1)
-    broadcast = _broadcastAddressGenerator(subnetIPaddress)
-    lhost = binarySum(broadcast, -1)
-    subnet = _joinSubnetParts(
+    fhost = binary_sum(subnetIPaddress, 1)
+    broadcast = _broadcast_address_generator(subnetIPaddress)
+    lhost = binary_sum(broadcast, -1)
+    subnet = _join_subnet_parts(
         unmutableIPAddress, networkIPAddress, subnetIPaddress, fhost, lhost, broadcast,
     )
-    nextIPToUse = binarySum((unmutableIPAddress+networkIPAddress+broadcast), 1)
-    result = IPVLSMSubnet.fromSubnet(
-        subnet, subnetSize, 32 - hostBits, generateMaskFromHosts(hostBits), )
-    return result, IP(transformBitsIntoIPString(nextIPToUse))
+    nextIPToUse = binary_sum((unmutableIPAddress+networkIPAddress+broadcast), 1)
+    result = IPVLSMSubnet.from_subnet(
+        subnet, subnetSize, 32 - hostBits, generate_mask_from_hosts(hostBits), )
+    return result, IP(transform_bits_into_ip_string(nextIPToUse))
 
 # Mastermind for the code
 # Recieves the parameters and then creates the dictionary
 # where everything is saved for later exportation
 
 
-def vlsmSubnetGenerator(ipString: str, targetSubnets: list[int]) -> IPVLSMSubnetCollection:
-
-    targetSubnets = reverseSort(targetSubnets)
+def vlsm_subnet_generator(ipString: str, targetSubnets: list[int]) -> IPVLSMSubnetCollection:
 
     ipAddress, originalIPAddress = IP(ipString), IP(ipString)
 
     subnets = []
 
-    for targetSubnetSize in targetSubnets:
-        subnet, ipAddress = _generateVLSMSubnet(ipAddress, targetSubnetSize)
+    for targetSubnetSize in reversed(sorted(targetSubnets)):
+        subnet, ipAddress = _generate_vlsm_subnet(ipAddress, targetSubnetSize)
         subnets.append(subnet)
 
     return IPVLSMSubnetCollection(
@@ -99,9 +93,9 @@ def vlsmSubnetGenerator(ipString: str, targetSubnets: list[int]) -> IPVLSMSubnet
 
 if __name__ == '__main__':
 
-    args = VLSMArgs.parseArgs()
+    args = VLSMArgs.parse_args()
 
-    result = vlsmSubnetGenerator(args.ipAddress, args.subnets)
+    result = vlsm_subnet_generator(args.ipAddress, args.subnets)
 
     if (args.filename):
         with open(args.filename, 'w') as f:

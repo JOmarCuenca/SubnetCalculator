@@ -14,7 +14,7 @@ class IP:
         return __o.ipString == self.ipString
 
     @staticmethod
-    def intToBinStr(value : int, long = 8) -> str:
+    def int_to_bin_str(value : int, long = 8) -> str:
         s = bin(value)[2:]
         return s.rjust(long, '0')
 
@@ -30,7 +30,7 @@ class IP:
         for part in ipParts:
             intVal = int(part)
             assert(intVal < 256)
-            ipf.append(IP.intToBinStr(intVal))
+            ipf.append(IP.int_to_bin_str(intVal))
 
         return ipf
 

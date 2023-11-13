@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 
 class NetArgs:
 
-    def parseArgs():
+    def parse_args():
         raise NotImplementedError()
 
 
@@ -13,7 +13,7 @@ class SubnetArgs(NetArgs):
     reservedBits: int
     filename: str | None
 
-    def parseArgs():
+    def parse_args():
         parser = ArgumentParser(
             prog='Subnet Calculator',
             description='This program calculates subnets from an ip V4, using reserved bits',
@@ -43,7 +43,8 @@ class VLSMArgs(NetArgs):
     subnets: list[int]
     filename: str | None
 
-    def parseArgs():
+    @staticmethod
+    def parse_args():
         parser = ArgumentParser(
             prog='Subnet Calculator',
             description='This program calculates subnets from an ip V4, using reserved bits',

@@ -7,7 +7,7 @@ class IPVLSMSubnet(IPSubnet):
     decimalMask : int
     mask : IP
 
-    def fromSubnet(subnet : IPSubnet, hosts : int, decimalMask : int, mask : IP):
+    def from_subnet(subnet : IPSubnet, hosts : int, decimalMask : int, mask : IP):
         return IPVLSMSubnet(
             subnet.subnetIP,
             subnet.firstHost,

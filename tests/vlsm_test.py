@@ -1,5 +1,5 @@
 import unittest
-from VLSM import vlsmSubnetGenerator
+from VLSM import vlsm_subnet_generator
 from netclasses.ip import IP
 from netclasses.ip_vlsm import IPVLSMSubnet, IPVLSMSubnetCollection
 from tests.common import VLSM_IP_ADDRESS, SUBNETS_SIZES
@@ -68,7 +68,7 @@ class Integration_Test(unittest.TestCase):
             ],
         )
 
-        result = vlsmSubnetGenerator(VLSM_IP_ADDRESS, SUBNETS_SIZES)
+        result = vlsm_subnet_generator(VLSM_IP_ADDRESS, SUBNETS_SIZES)
 
         self.assertEqual(target, result)
 
