@@ -15,13 +15,11 @@ class IP:
 
     def intToBinStr(value : int, long = 8) -> str:
         s = bin(value)[2:]
-        return s.rjust(long, "0")
+        return s.rjust(long, '0')
 
     def divide(ip : str) -> list[str]:
-        """
-        Receives the IP in string form and transforms it into the binary parts
-        and returns them in a list.
-        """
+        """Receives the IP in string form and transforms it into the binary
+        parts and returns them in a list."""
         ipf = []
         ipParts = ip.split('.')
 
@@ -43,9 +41,9 @@ class IPSubnet:
 
     def __str__(self) -> str:
         parts = [
-            f"Subnet_IP = {self.subnetIP}",
-            f"Hosts = {self.firstHost} - {self.lastHost}",
-            f"Broadcast = {self.broadcastIP}",
+            f'Subnet_IP = {self.subnetIP}',
+            f'Hosts = {self.firstHost} - {self.lastHost}',
+            f'Broadcast = {self.broadcastIP}',
         ]
 
-        return " | ".join(parts)
+        return ' | '.join(parts)

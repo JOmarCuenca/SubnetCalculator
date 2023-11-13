@@ -20,12 +20,18 @@ class SubnetArgs(NetArgs):
             epilog='May the force be with you',
         )
 
-        parser.add_argument("ipAddress", type=str,
-                            help="IP V4 address to subnet",)
-        parser.add_argument("reservedBits", type=int,
-                            help="Bits to be used by the subnets",)
-        parser.add_argument("-o", type=str, nargs='?',
-                            help="If you wanna export the result send as a param the filename to export", dest="filename")
+        parser.add_argument(
+            'ipAddress', type=str,
+            help='IP V4 address to subnet',
+        )
+        parser.add_argument(
+            'reservedBits', type=int,
+            help='Bits to be used by the subnets',
+        )
+        parser.add_argument(
+            '-o', type=str, nargs='?',
+            help='If you wanna export the result send as a param the filename to export', dest='filename',
+        )
 
         args = parser.parse_args()
 
@@ -44,12 +50,18 @@ class VLSMArgs(NetArgs):
             epilog='May the force be with you',
         )
 
-        parser.add_argument("ipAddress", type=str,
-                            help="IP V4 address to subnet",)
-        parser.add_argument("subnets", type=int, nargs="+",
-                            help="Subnets to be calculated",)
-        parser.add_argument("-o", type=str, nargs='?',
-                            help="If you wanna export the result send as a param the filename to export", dest="filename")
+        parser.add_argument(
+            'ipAddress', type=str,
+            help='IP V4 address to subnet',
+        )
+        parser.add_argument(
+            'subnets', type=int, nargs='+',
+            help='Subnets to be calculated',
+        )
+        parser.add_argument(
+            '-o', type=str, nargs='?',
+            help='If you wanna export the result send as a param the filename to export', dest='filename',
+        )
 
         args = parser.parse_args()
 

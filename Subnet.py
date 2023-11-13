@@ -8,15 +8,11 @@ from netclasses.ip import IP
 from netclasses.ip_subnet import IPSubnet, IPSubnetCollection
 
 def _maskIsValid(currentMask: list[int]):
-    """
-    Checks the subnet mask so there are no contradictions
-    """
+    """Checks the subnet mask so there are no contradictions."""
     return all([val == 255 for val in currentMask])
 
 def _generateMask(maskBitsToUse: int) -> IP:
-    """
-    Calculates the subnet mask
-    """
+    """Calculates the subnet mask."""
 
     assert (9 <= maskBitsToUse <= 30)
 
@@ -55,8 +51,8 @@ def init(ipi, m):
 
 
 def _separateIPSectionBinary(string) -> str:
-    """
-    Separates a string of binary characters using '.' into chunks of 8 sized length
+    """Separates a string of binary characters using '.' into chunks of 8 sized
+    length.
 
     This to correctly separate each ip section.
     """
@@ -69,9 +65,8 @@ def _separateIPSectionBinary(string) -> str:
 
 
 def transformBitsIntoIPString(string) -> str:
-    """
-    Separate the binary string into 4 ip sections and returns them in decimal integers.
-    """
+    """Separate the binary string into 4 ip sections and returns them in
+    decimal integers."""
     binarySeparatedIPAddress = _separateIPSectionBinary(string)
 
     ipSectionsDecimal = [
@@ -89,9 +84,8 @@ def isNotBroadcast(value : str): return '0' in value
 
 
 def binarySum(subnet : str, quantity : int):
-    """
-    Adds `quantity` to the `subnet` value and returns the value in binary form.
-    """
+    """Adds `quantity` to the `subnet` value and returns the value in binary
+    form."""
     assert(subnet)
     long = len(subnet)
     num = int(subnet, 2)
@@ -106,23 +100,23 @@ def binarySum(subnet : str, quantity : int):
 
 def subnetGenerator(ipi, ubits):
     ip, cl, mask, bits = init(ipi, ubits)
-    if (bits == "error"):
+    if (bits == 'error'):
         return bits
-    origin = ""
+    origin = ''
     for x in ip:
         origin += x
-    unmut = ""
+    unmut = ''
     bits_no_usables = cl*8
     for x in range(bits_no_usables):
         unmut += origin[x]
 
     subnet_init = bits_no_usables+1
-    bits_subnet = ""
+    bits_subnet = ''
     for x in range(subnet_init, subnet_init+bits):
         bits_subnet += '0'
 
-    bits_usable_zeros = ""
-    broad = ""
+    bits_usable_zeros = ''
+    broad = ''
     for x in range(len(bits_subnet+unmut), len(origin)):
         broad += '1'
         bits_usable_zeros += '0'
@@ -135,16 +129,18 @@ def subnetGenerator(ipi, ubits):
     while targetSubnetReached:
         targetSubnetReached = isNotBroadcast(bits_subnet)
 
-        dictionary.append(IPSubnet(
-            # ip of the network
-            IP(transformBitsIntoIPString(unmut + bits_subnet + bits_usable_zeros)),
-            # first host
-            IP(transformBitsIntoIPString(unmut + bits_subnet + first)),
-            # last host
-            IP(transformBitsIntoIPString(unmut + bits_subnet + bits_usable_last)),
-            # broadcast
-            IP(transformBitsIntoIPString(unmut + bits_subnet + broad)),
-        ))
+        dictionary.append(
+            IPSubnet(
+                # ip of the network
+                IP(transformBitsIntoIPString(unmut + bits_subnet + bits_usable_zeros)),
+                # first host
+                IP(transformBitsIntoIPString(unmut + bits_subnet + first)),
+                # last host
+                IP(transformBitsIntoIPString(unmut + bits_subnet + bits_usable_last)),
+                # broadcast
+                IP(transformBitsIntoIPString(unmut + bits_subnet + broad)),
+            ),
+        )
 
         bits_subnet = binarySum(bits_subnet, 1)
 
@@ -152,7 +148,7 @@ def subnetGenerator(ipi, ubits):
         segmentIP=dictionary[0],
         subnets=dictionary[1: -1],
         broadcastIP=dictionary[-1],
-        mask=mask
+        mask=mask,
     )
 
 
@@ -163,7 +159,7 @@ if __name__ == '__main__':
     result = subnetGenerator(args.ipAddress, args.reservedBits)
 
     if(args.filename):
-        with open(args.filename, "w") as f:
+        with open(args.filename, 'w') as f:
             f.write(str(result))
     else:
         print(result)

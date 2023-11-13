@@ -10,13 +10,13 @@ Then divides the available ip address into the available number of subnets using
 
 ### Subnet Module
 
-```bash 
+```bash
 python3 Subnet.py 10.0.0.0 10
 ```
 
 or if you want to export the result into a file for further reading.
 
-```bash 
+```bash
 python3 Subnet.py 10.0.0.0 10 -o dumps/Subnets.txt
 ```
 
@@ -24,13 +24,13 @@ python3 Subnet.py 10.0.0.0 10 -o dumps/Subnets.txt
 
 Being every int value after the ip address, the size of each of the subnet required (they don't have to be sorted).
 
-```bash 
+```bash
 python3 VLSM.py 192.168.254.0 95 70 2 2
 ```
 
 or if you want to export the result into a file for further reading.
 
-```bash 
+```bash
 python3 VLSM.py 192.168.254.0 95 70 2 2 -o dumps/VLSM.txt
 ```
 

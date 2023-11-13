@@ -15,19 +15,19 @@ class IPVLSMSubnet(IPSubnet):
             subnet.broadcastIP,
             hosts,
             decimalMask,
-            mask
+            mask,
         )
 
     def __str__(self) -> str:
-        
+
         parts = [
-            f"The available hosts in this subnet are {self.hosts}" ,
+            f'The available hosts in this subnet are {self.hosts}' ,
             super().__str__(),
-            f"The Subnet mask in decimal form is: {self.decimalMask}",
-            f"The Subnet mask is -> {self.mask}"
+            f'The Subnet mask in decimal form is: {self.decimalMask}',
+            f'The Subnet mask is -> {self.mask}',
         ]
 
-        return "\n".join(parts)
+        return '\n'.join(parts)
 
 @dataclass(frozen=True, eq=True)
 class IPVLSMSubnetCollection:
@@ -35,17 +35,17 @@ class IPVLSMSubnetCollection:
     subnets : list[IPVLSMSubnet]
 
     def __str__(self) -> str:
-        
+
         parts = [
-            f"The next subnets are for ip: {self.originalIP}",
-            "",
+            f'The next subnets are for ip: {self.originalIP}',
+            '',
         ]
 
         for i, subnet in enumerate(self.subnets):
             parts.extend([
-                f"Subnet #{i + 1}",
+                f'Subnet #{i + 1}',
                 str(subnet),
-                "",
+                '',
             ])
 
         return '\n'.join(parts).rstrip()

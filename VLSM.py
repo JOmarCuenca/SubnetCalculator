@@ -15,9 +15,7 @@ def reverseSort(arr: list):
 
 
 def _calculateMaskSize(size):
-    """
-    Calculates the requiered bits in order for the hosts to work
-    """
+    """Calculates the requiered bits in order for the hosts to work."""
     res = 0
     while (True):
         assert (res <= size)
@@ -28,10 +26,8 @@ def _calculateMaskSize(size):
 
 
 def _broadcastAddressGenerator(quantity: int):
-    """
-    Creates the string for the broadcast of that subnet
-    """
-    return "1" * len(quantity)
+    """Creates the string for the broadcast of that subnet."""
+    return '1' * len(quantity)
 
 # creates all the different combinations for the subnets
 # IP,hosts,broadcast
@@ -48,9 +44,8 @@ def _joinSubnetParts(unmutableBits: str, networkBits: str, subnetIdAddress: str,
 
 
 def generateMaskFromHosts(host) -> IP:
-    """
-    Creates the mask for the Subnet using the bits dedicated for the hosts
-    """
+    """Creates the mask for the Subnet using the bits dedicated for the
+    hosts."""
     mask = '1' * (32 - host) + '0' * host
     return IP(transformBitsIntoIPString(mask))
 
@@ -62,14 +57,18 @@ def _generateVLSMSubnet(ip: IP, subnetSize: int) -> tuple[IPVLSMSubnet, IP]:
     reservedBits, availableBits = ip.ipClass.reservedBits(), ip.ipClass.availableBits()
     hostBits = _calculateMaskSize(subnetSize)
 
-    unmutableIPAddress, networkIPAddress, subnetIPaddress = binaryAddress[:reservedBits], binaryAddress[reservedBits: reservedBits + (
-        availableBits - hostBits)], binaryAddress[reservedBits + (availableBits - hostBits):]
+    unmutableIPAddress, networkIPAddress, subnetIPaddress = binaryAddress[:reservedBits], binaryAddress[
+        reservedBits: reservedBits + (
+        availableBits - hostBits
+        )
+    ], binaryAddress[reservedBits + (availableBits - hostBits):]
 
     fhost = binarySum(subnetIPaddress, 1)
     broadcast = _broadcastAddressGenerator(subnetIPaddress)
     lhost = binarySum(broadcast, -1)
     subnet = _joinSubnetParts(
-        unmutableIPAddress, networkIPAddress, subnetIPaddress, fhost, lhost, broadcast)
+        unmutableIPAddress, networkIPAddress, subnetIPaddress, fhost, lhost, broadcast,
+    )
     nextIPToUse = binarySum((unmutableIPAddress+networkIPAddress+broadcast), 1)
     result = IPVLSMSubnet.fromSubnet(
         subnet, subnetSize, 32 - hostBits, generateMaskFromHosts(hostBits), )
@@ -94,12 +93,12 @@ def vlsmSubnetGenerator(ipString: str, targetSubnets: list[int]) -> IPVLSMSubnet
 
     return IPVLSMSubnetCollection(
         originalIPAddress,
-        subnets
+        subnets,
     )
 
 
 if __name__ == '__main__':
-    
+
     args = VLSMArgs.parseArgs()
 
     result = vlsmSubnetGenerator(args.ipAddress, args.subnets)
@@ -107,5 +106,5 @@ if __name__ == '__main__':
     if(args.filename):
         with open(args.filename, 'w') as f:
             f.write(str(result))
-    else: 
+    else:
         print(result)
