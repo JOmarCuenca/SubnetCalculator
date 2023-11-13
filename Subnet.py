@@ -44,7 +44,7 @@ def _generateMask(maskBitsToUse: int) -> IP:
 def init(ipi, m):
     ip = IP(ipi)
     claseip = ip.ipClass
-    usebits = m-ip.ipClass.reservedBits()
+    usebits = m-ip.ipClass.reserved_bits
     assert (usebits > 0)
     mask = _generateMask(m)
     return ip.ipBinaryParts, claseip.value, mask, usebits

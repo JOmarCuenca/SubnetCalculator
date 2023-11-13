@@ -13,10 +13,12 @@ class IP:
     def __eq__(self, __o: object) -> bool:
         return __o.ipString == self.ipString
 
+    @staticmethod
     def intToBinStr(value : int, long = 8) -> str:
         s = bin(value)[2:]
         return s.rjust(long, '0')
 
+    @staticmethod
     def divide(ip : str) -> list[str]:
         """Receives the IP in string form and transforms it into the binary
         parts and returns them in a list."""

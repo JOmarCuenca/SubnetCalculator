@@ -54,12 +54,12 @@ def generateMaskFromHosts(host) -> IP:
 
 def _generateVLSMSubnet(ip: IP, subnetSize: int) -> tuple[IPVLSMSubnet, IP]:
     binaryAddress = ''.join(ip.ipBinaryParts)
-    reservedBits, availableBits = ip.ipClass.reservedBits(), ip.ipClass.availableBits()
+    reservedBits, availableBits = ip.ipClass.reserved_bits, ip.ipClass.available_bits
     hostBits = _calculateMaskSize(subnetSize)
 
     unmutableIPAddress, networkIPAddress, subnetIPaddress = binaryAddress[:reservedBits], binaryAddress[
         reservedBits: reservedBits + (
-        availableBits - hostBits
+            availableBits - hostBits
         )
     ], binaryAddress[reservedBits + (availableBits - hostBits):]
 
@@ -103,7 +103,7 @@ if __name__ == '__main__':
 
     result = vlsmSubnetGenerator(args.ipAddress, args.subnets)
 
-    if(args.filename):
+    if (args.filename):
         with open(args.filename, 'w') as f:
             f.write(str(result))
     else:

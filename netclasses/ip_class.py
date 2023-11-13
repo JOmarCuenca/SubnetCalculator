@@ -1,20 +1,24 @@
-from enum import Enum
+from enum import IntEnum
 
-class IPClass(Enum):
+
+class IPClass(IntEnum):
     A = 1
     B = 2
     C = 3
     D = 4
     E = 5
 
-    def reservedBits(self) -> int:
+    @property
+    def reserved_bits(self) -> int:
         return self.value * 8
 
-    def availableBits(self) -> int:
-        return 32 - self.reservedBits()
+    @property
+    def available_bits(self) -> int:
+        return 32 - self.reserved_bits
 
-    def category(binaryNum : int):
-        assert(binaryNum > 0 and binaryNum < 256)
+    @staticmethod
+    def category(binaryNum: int):
+        assert (binaryNum > 0 and binaryNum < 256)
 
         if (binaryNum < 128):
             return IPClass.A
